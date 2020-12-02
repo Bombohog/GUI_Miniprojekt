@@ -28,12 +28,12 @@ public class TicTacToe {
     field player;
     field computer;
     byte difficulty;
-    boolean gameActiveStatus;
+    boolean gameActiveStatus = false;
 
     // Player turn
     public boolean placeField(byte[] placement) {
 
-        if (board[placement[0]][placement[1]] == field.EMPTY) {
+        if (board[placement[0]][placement[1]] == field.EMPTY && gameActiveStatus) {
             board[placement[0]][placement[1]] = player;
             return true;
         }
@@ -133,9 +133,8 @@ public class TicTacToe {
                                     if (board[0][2] == player && board[1][1] == player  && board[2][0] == field.EMPTY) { board[2][0] = computer; return new byte[]{2, 0}; } else
                                     if (board[0][2] == player && board[1][1] == field.EMPTY  && board[2][0] == player) { board[1][1] = computer; return new byte[]{1, 1}; } else
                                     if (board[0][2] == field.EMPTY && board[1][1] == player  && board[2][0] == player) { board[0][2] = computer; return new byte[]{0, 2}; } else /* End of leftBottom to rightTop *//* At last if the player cant win, then it makes a random/dumbMove() move */
-                                    { dumbMove(); }
+                                    { return dumbMove(); }
 
-                                    return null;
     }
 
 

@@ -5,17 +5,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Controller {
 
-
-
-
     // Tic Tac Toe game under here
+    enum Winner { PLAYER, COMPUTER, NON; }
+
     @FXML
     ChoiceBox choiceBoxTicTacToe;
 
@@ -52,14 +51,24 @@ public class Controller {
         gameTicTacToe = new TicTacToe();
         if (choiceBoxTicTacToe.getValue() != null) {
 
+            // Reset and set UI
             labelWinner.setText("");
             initialize();
-            String[] symbols = gameTicTacToe.newGame((Byte) choiceBoxTicTacToe.getValue());
+            byte choiceDifficulty = 1;
+            if ((String) choiceBoxTicTacToe.getValue() == "Easy") {
+                choiceDifficulty = 1;
+            } else if ((String) choiceBoxTicTacToe.getValue() == "Normal") {
+                choiceDifficulty = 2;
+            } if ((String) choiceBoxTicTacToe.getValue() == "Harder") {
+                choiceDifficulty = 3;
+            }
+            String[] symbols = gameTicTacToe.newGame(choiceDifficulty);
             labelPlayer1.setText(symbols[0]);
             labelPlayer2.setText(symbols[1]);
             choiceBoxTicTacToe.setDisable(true);
             gameTicTacToe.gameActiveStatus = true;
 
+            // Reset board
             button00.setText(" ");
             button01.setText(" ");
             button02.setText(" ");
@@ -70,10 +79,23 @@ public class Controller {
             button21.setText(" ");
             button22.setText(" ");
 
+            // If the player is circle the computer goes first
+            if (symbols[0] == "Circle") {
+                // Place computer symbol on board
+                byte[] computerPoints =  gameTicTacToe.computerAI();
+                Button computerButton = whichButton(computerPoints);
+                if (gameTicTacToe.computer == TicTacToe.field.CIRCLE) {
+                    computerButton.setText("o");
+                } else {
+                    computerButton.setText("x");
+                }
+            }
+
         } else { labelWinner.setText("Choose difficulty"); }
 
     }
 
+    // Initialize all buttons
     @FXML
     public void initialize() { // https://stackoverflow.com/questions/37902660/javafx-button-sending-arguments-to-actionevent-function
         button00.setOnAction(e -> placement(button00, new byte[]{0, 0}));
@@ -87,11 +109,15 @@ public class Controller {
         button22.setOnAction(e -> placement(button22, new byte[]{2, 2}));
     }
 
-
+    // Places and checks
     public void placement(Button button, byte[] points) {
 
         // If the player can place the field and the game is still going
         if (gameTicTacToe.placeField(new byte[]{points[0], points[1]}) && gameTicTacToe.gameActiveStatus) {
+
+            // Used later
+            String winnerString = "";
+
             // Place player symbol on board
             if (gameTicTacToe.player == TicTacToe.field.CIRCLE) {
                 button.setText("o");
@@ -100,18 +126,21 @@ public class Controller {
             }
 
             // Check if the player wins
-            String winner = gameTicTacToe.checkWinCondition();
-            if (!winner.equals("NON")) {
+            winnerString = gameTicTacToe.checkWinCondition();
+            if (!winnerString.equals("NON")) {
                 choiceBoxTicTacToe.setDisable(false);
-                labelWinner.setText(winner);
+                labelWinner.setText(winnerString);
                 gameTicTacToe.gameActiveStatus = false;
-                logWin(true);
+                logWin(Winner.PLAYER);
                 return; // Stops the computer from placing anything
             }
 
             // Is the board filled
             if (gameTicTacToe.boardFilled()) {
+                choiceBoxTicTacToe.setDisable(false);
+                labelWinner.setText("Draw");
                 gameTicTacToe.gameActiveStatus = false;
+                logWin(Winner.NON);
                 return; // Stops anyone but mostly the computer from placing
             }
 
@@ -125,12 +154,12 @@ public class Controller {
             }
 
             // Check if the computer wins
-            winner = gameTicTacToe.checkWinCondition();
-            if (!winner.equals("NON")) {
+            winnerString = gameTicTacToe.checkWinCondition();
+            if (!winnerString.equals("NON")) {
                 choiceBoxTicTacToe.setDisable(false);
-                labelWinner.setText(winner);
+                labelWinner.setText(winnerString);
                 gameTicTacToe.gameActiveStatus = false;
-                logWin(false);
+                logWin(Winner.COMPUTER);
             }
 
         }
@@ -165,33 +194,29 @@ public class Controller {
     }
 
     // Saves the gameplay/win
-    private void logWin(boolean winner) {
+    private void logWin(Winner winner) {
 
         try {
 
             File file = new File("GameplayLog.txt");
-            Scanner input = new Scanner(file);
-
-            while (input.hasNextLine()) {
-
-                String placeholder = input.nextLine();
-                // TODO
-            }
 
             String winnerString = "";
-            if (winner) {
+            if (winner == Winner.PLAYER) {
                 winnerString = "Player Won!";
-            } else {
+            } else if (winner == Winner.COMPUTER) {
                 winnerString = "Computer Win!";
+            } else {
+                winnerString = "Draw!";
             }
 
-            // TODO make save feature work, problem is that it overwrites the saved text
             FileWriter fileWriter = new FileWriter(file, true);
-            fileWriter.write(button00.getText() + button10.getText() + button20.getText() + "\n"
-                    + button01.getText() + button11.getText() + button21.getText() + "\n"
-                    + button02.getText() + button12.getText() + button22.getText() + "\n" + winnerString);
-
-            input.close();
+            BufferedWriter outStream = new BufferedWriter(fileWriter);
+            outStream.write(button00.getText() + " " + button10.getText() + " "  + button20.getText() + "\n"
+                    + button01.getText() + " "  + button11.getText() + " "  + button21.getText() + "\n"
+                    + button02.getText() + " "  + button12.getText() + " "  + button22.getText() + "\n"
+                    + winnerString + "\nAI Difficulty: " + (String) choiceBoxTicTacToe.getValue() + "\n\n");
+            outStream.close();
+            fileWriter.close();
 
         } catch (IOException e) {
             System.out.println("Something went wrong!");
