@@ -4,11 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 
 public class Controller {
 
@@ -43,6 +42,9 @@ public class Controller {
     Label labelPlayer2;
     @FXML
     Label labelWinner;
+
+    @FXML
+    TextArea gameplayLog;
 
     TicTacToe gameTicTacToe;
 
@@ -221,6 +223,35 @@ public class Controller {
         } catch (IOException e) {
             System.out.println("Something went wrong!");
         }
+
+        loadGameplayLog();
+
+    }
+
+    // Loads saved games into the log tab
+    @FXML
+    public void loadGameplayLog() {
+
+        ArrayList<String> lines = new ArrayList<String>();
+
+        try {
+
+            File file = new File("GameplayLog.txt");
+            FileReader fileReader = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fileReader);
+
+            String line;
+            while ((line = reader.readLine()) != null) { lines.add(line); }
+
+            for (int i = 0; i < lines.size(); i++) {
+                if (i == 0) {
+                    gameplayLog.setText(lines.get(i) + "\n");
+                } else {
+                    gameplayLog.appendText(lines.get(i) + "\n");
+                }
+            }
+
+        } catch (IOException e) { e.printStackTrace(); }
 
     }
 

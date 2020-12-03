@@ -34,6 +34,7 @@ public class TicTacToe {
     public boolean placeField(byte[] placement) {
 
         if (board[placement[0]][placement[1]] == field.EMPTY && gameActiveStatus) {
+
             board[placement[0]][placement[1]] = player;
             return true;
         }
