@@ -1,0 +1,36 @@
+x x x
+o    
+o    
+Player Won!
+AI Difficulty: Easy
+
+o x x
+o o o
+x   x
+Player Won!
+AI Difficulty: Normal
+
+x x x
+o    
+o    
+Player Won!
+AI Difficulty: Harder
+
+  x o
+  o x
+o   x
+Player Won!
+AI Difficulty: Harder
+
+x    
+o x o
+    x
+Player Won!
+AI Difficulty: Harder
+
+  x o
+x o  
+o   x
+Player Won!
+AI Difficulty: Harder
+

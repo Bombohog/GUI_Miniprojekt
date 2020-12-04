@@ -57,11 +57,12 @@ public class Controller {
             labelWinner.setText("");
             initialize();
             byte choiceDifficulty = 1;
-            if ((String) choiceBoxTicTacToe.getValue() == "Easy") {
+            String stringDifficulty = (String) choiceBoxTicTacToe.getValue();
+            if (stringDifficulty.toLowerCase().equals("easy")) {
                 choiceDifficulty = 1;
-            } else if ((String) choiceBoxTicTacToe.getValue() == "Normal") {
+            } else if (stringDifficulty.toLowerCase().equals("normal")) {
                 choiceDifficulty = 2;
-            } if ((String) choiceBoxTicTacToe.getValue() == "Harder") {
+            } else if (stringDifficulty.toLowerCase().equals("harder")) {
                 choiceDifficulty = 3;
             }
             String[] symbols = gameTicTacToe.newGame(choiceDifficulty);
