@@ -55,7 +55,6 @@ public class Controller {
 
             // Reset and set UI
             labelWinner.setText("");
-            initialize();
             byte choiceDifficulty = 1;
             String stringDifficulty = (String) choiceBoxTicTacToe.getValue();
             if (stringDifficulty.toLowerCase().equals("easy")) {
@@ -70,6 +69,7 @@ public class Controller {
             labelPlayer2.setText(symbols[1]);
             choiceBoxTicTacToe.setDisable(true);
             gameTicTacToe.gameActiveStatus = true;
+            initializeBottom();
 
             // Reset board
             button00.setText(" ");
@@ -99,17 +99,18 @@ public class Controller {
     }
 
     // Initialize all buttons
-    @FXML
-    public void initialize() { // https://stackoverflow.com/questions/37902660/javafx-button-sending-arguments-to-actionevent-function
-        button00.setOnAction(e -> placement(button00, new byte[]{0, 0}));
-        button01.setOnAction(e -> placement(button01, new byte[]{0, 1}));
-        button02.setOnAction(e -> placement(button02, new byte[]{0, 2}));
-        button10.setOnAction(e -> placement(button10, new byte[]{1, 0}));
-        button11.setOnAction(e -> placement(button11, new byte[]{1, 1}));
-        button12.setOnAction(e -> placement(button12, new byte[]{1, 2}));
-        button20.setOnAction(e -> placement(button20, new byte[]{2, 0}));
-        button21.setOnAction(e -> placement(button21, new byte[]{2, 1}));
-        button22.setOnAction(e -> placement(button22, new byte[]{2, 2}));
+    public void initializeBottom() { // https://stackoverflow.com/questions/37902660/javafx-button-sending-arguments-to-actionevent-function
+        if (gameTicTacToe.gameActiveStatus) {
+            button00.setOnAction(e -> placement(button00, new byte[]{0, 0}));
+            button01.setOnAction(e -> placement(button01, new byte[]{0, 1}));
+            button02.setOnAction(e -> placement(button02, new byte[]{0, 2}));
+            button10.setOnAction(e -> placement(button10, new byte[]{1, 0}));
+            button11.setOnAction(e -> placement(button11, new byte[]{1, 1}));
+            button12.setOnAction(e -> placement(button12, new byte[]{1, 2}));
+            button20.setOnAction(e -> placement(button20, new byte[]{2, 0}));
+            button21.setOnAction(e -> placement(button21, new byte[]{2, 1}));
+            button22.setOnAction(e -> placement(button22, new byte[]{2, 2}));
+        }
     }
 
     // Places and checks
